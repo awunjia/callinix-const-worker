@@ -108,16 +108,41 @@ export default {
       })
     }
 
+    // ?preview= in URL — never fall through to under-construction silently
+    if (url.searchParams.has('preview')) {
+      if (!env.PREVIEW_SECRET?.trim()) {
+        return new Response(
+          'Preview gateway: PREVIEW_SECRET is not set. Add it as an encrypted Secret in Cloudflare (plain text variables are removed on every Git deploy).',
+          { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } },
+        )
+      }
+      if (!previewMatches(url, env)) {
+        return new Response('Preview gateway: invalid preview token.', {
+          status: 403,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        })
+      }
+      if (!env.APP_ORIGIN) {
+        return new Response('Preview gateway: APP_ORIGIN is not configured.', {
+          status: 500,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        })
+      }
+      if (!env.PROXY_HEADER_SECRET?.trim()) {
+        return new Response(
+          'Preview gateway: PROXY_HEADER_SECRET is not set. Add it as an encrypted Secret (must match the app→dashboard redirect rule).',
+          { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } },
+        )
+      }
+      // Origin down (no app deployed yet) → browser shows 502/522 from Cloudflare
+      return proxyWithPreviewCookie(request, env)
+    }
+
     if (!env.APP_ORIGIN) {
-      if (previewMatches(url, env) || isTester(request, env)) {
+      if (isTester(request, env)) {
         return new Response('APP_ORIGIN is not configured', { status: 500 })
       }
       return env.ASSETS.fetch(request)
-    }
-
-    // Valid ?preview= → proxy real app immediately and set cookie
-    if (previewMatches(url, env)) {
-      return proxyWithPreviewCookie(request, env)
     }
 
     if (isTester(request, env)) {
