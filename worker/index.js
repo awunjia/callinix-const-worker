@@ -98,6 +98,16 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url)
 
+    // GET /__callinx-health — verify bindings after deploy (no secret values exposed)
+    if (url.pathname === '/__callinx-health') {
+      return Response.json({
+        hasAppOrigin: Boolean(env.APP_ORIGIN),
+        hasPreviewSecret: Boolean(env.PREVIEW_SECRET),
+        hasProxyHeaderSecret: Boolean(env.PROXY_HEADER_SECRET),
+        appOrigin: env.APP_ORIGIN || null,
+      })
+    }
+
     if (!env.APP_ORIGIN) {
       if (previewMatches(url, env) || isTester(request, env)) {
         return new Response('APP_ORIGIN is not configured', { status: 500 })

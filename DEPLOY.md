@@ -113,17 +113,50 @@ In **DNS** for `callinix.com`:
 
 | Name | Type | Example |
 |------|------|---------|
-| `APP_ORIGIN` | Variable (plain text) | `https://your-real-dashboard.pages.dev` |
-| `PREVIEW_SECRET` | Secret (encrypted) | long random string, e.g. from `openssl rand -hex 32` |
+| `APP_ORIGIN` | Variable (plain text) | `https://app.callinix.com` (also in `wrangler.toml` — survives Git deploy) |
+| `PREVIEW_SECRET` | **Secret (encrypted)** | long random string |
+| `PROXY_HEADER_SECRET` | **Secret (encrypted)** | same value as redirect rule |
 | `TESTER_IPS` | Variable (optional) | `203.0.113.10` office IP |
 
-Or from CLI (in this repo):
+#### Why secrets disappear after a Git push
+
+Each Git deploy runs `wrangler deploy`, which syncs **plain text** `[vars]` from `wrangler.toml` (`APP_ORIGIN`, `TESTER_IPS` only).
+
+If you added `PREVIEW_SECRET` or `PROXY_HEADER_SECRET` as **Plain text** variables in the dashboard, they are **removed on every deploy**.
+
+**Fix:** Add them as **Secrets** (Encrypt), not Plain text — secrets persist across deploys.
+
+After every deploy, verify:
+
+```bash
+curl -s https://dashboard.callinix.com/__callinx-health
+```
+
+Expect:
+
+```json
+{
+  "hasAppOrigin": true,
+  "hasPreviewSecret": true,
+  "hasProxyHeaderSecret": true,
+  "appOrigin": "https://app.callinix.com"
+}
+```
+
+If `hasPreviewSecret` or `hasProxyHeaderSecret` is `false`, re-add secrets:
 
 ```bash
 npx wrangler secret put PREVIEW_SECRET
+npx wrangler secret put PROXY_HEADER_SECRET
 ```
 
-Update `wrangler.toml` `[vars]` for `APP_ORIGIN` / `TESTER_IPS`, then redeploy so Git builds pick them up—or set them only in the dashboard (dashboard overrides for secrets).
+Or dashboard → **Add** → **Secret** (not Variable).
+
+Local debug script:
+
+```bash
+PREVIEW_SECRET='your-token' PROXY_HEADER_SECRET='your-proxy-token' ./scripts/check-preview.sh
+```
 
 ---
 

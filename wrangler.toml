@@ -17,7 +17,8 @@ html_handling = "auto-trailing-slash"
 APP_ORIGIN = "https://app.callinix.com"
 TESTER_IPS = ""
 
-# Set secrets in dashboard or: npx wrangler secret put PREVIEW_SECRET
-# Testers visit: https://dashboard.callinix.com/?preview=YOUR_SECRET
-#
-# PROXY_HEADER_SECRET — same value used in Redirect Rule on app.callinix.com (see DEPLOY.md)
+# PREVIEW_SECRET and PROXY_HEADER_SECRET must be Wrangler SECRETS (encrypted).
+# Plain-text dashboard variables are WIPED on each Git deploy — use:
+#   npx wrangler secret put PREVIEW_SECRET
+#   npx wrangler secret put PROXY_HEADER_SECRET
+# Health check: https://dashboard.callinix.com/__callinx-health
