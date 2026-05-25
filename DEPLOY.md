@@ -1,5 +1,15 @@
 # Deploy Callinx under-construction to callinix.com
 
+## Wrong GitHub repo?
+
+Cloudflare project **`callinix-const-worker`** must use repo **`awunjia/callinix-const-worker`**.
+
+The app code lives in **`awunjia/callinix-const`** unless you push it to the worker repo (this project is pushed to both).
+
+If the worker repo only has a README, deploys will fail with *Could not detect static files*.
+
+---
+
 ## Why the GitHub clone failed (exit code 128)
 
 Cloudflare expects a **`main`** branch by default. This repo only had **`prod`**, so the clone failed with:
