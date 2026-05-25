@@ -1,0 +1,18 @@
+name = "callinix-const"
+main = "worker/index.js"
+compatibility_date = "2024-09-23"
+
+# Deploy after: npm run build
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+html_handling = "auto-trailing-slash"
+
+# Real app URL (staging or production origin the worker proxies to)
+[vars]
+APP_ORIGIN = "https://app.callinix.com"
+TESTER_IPS = ""
+
+# Set secret in dashboard or: npx wrangler secret put PREVIEW_SECRET
+# Testers visit: https://callinix.com/?preview=YOUR_SECRET
