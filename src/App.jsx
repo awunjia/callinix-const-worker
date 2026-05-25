@@ -22,7 +22,7 @@ export default function App() {
         <p className="badge">Coming soon</p>
 
         <h1 className="title">
-          Your AI voice receptionist
+          Your AI voice receptionist - never miss a call
         </h1>
 
         <p className="lead">
