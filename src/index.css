@@ -1,0 +1,34 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --brand: #5a67f2;
+  --brand-light: #6a7bff;
+  --brand-glow: #8b96ff;
+  --accent: #e0e4ff;
+  --text: #f8f9ff;
+  --text-muted: rgba(248, 249, 255, 0.72);
+  --surface: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+}
+
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100dvh;
+  background: #0f1229;
+  color: var(--text);
+}
+
+#root {
+  min-height: 100dvh;
+}

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <pattern id="african-maze" width="128" height="128" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="rgba(255,255,255,0.065)" stroke-width="1.15" stroke-linecap="square">
+        <!-- Outer ring corridor -->
+        <path d="M8 8 H120 V120 H8 Z M24 24 H104 V104 H24 Z"/>
+        <!-- Winding single-path corridors (7-turn labyrinth feel) -->
+        <path d="M24 24 H64 V48 H48 V72 H88 V88 H40 V104"/>
+        <path d="M104 24 V56 H72 V72 H96 V96 H56 V104"/>
+        <path d="M24 56 H40 V40 H56 V56 H72 V40 H88 V56"/>
+        <path d="M88 72 H104 V48 M40 88 H64 V72 M72 96 H96 V80"/>
+        <!-- Branching dead-end corridors -->
+        <path d="M48 48 H80 V64 H64 V80 H48 V64"/>
+        <path d="M32 88 H48 V104 M80 32 H96 V48"/>
+        <path d="M16 64 H24 M104 64 H112 M64 16 V24 M64 104 V112"/>
+      </g>
+      <g fill="none" stroke="rgba(90,103,242,0.06)" stroke-width="1.5">
+        <path d="M32 16 H96 M32 112 H96 M16 32 V96 M112 32 V96"/>
+        <path d="M48 32 H80 V48 H48 V80 H80 V96 H48"/>
+      </g>
+    </pattern>
+  </defs>
+  <rect width="128" height="128" fill="url(#african-maze)"/>
+</svg>
