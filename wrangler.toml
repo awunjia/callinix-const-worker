@@ -2,7 +2,10 @@ name = "callinix-const"
 main = "worker/index.js"
 compatibility_date = "2024-09-23"
 
-# Deploy after: npm run build
+# Runs automatically before `wrangler deploy` (creates ./dist)
+[build]
+command = "npm run build"
+
 [assets]
 directory = "./dist"
 binding = "ASSETS"

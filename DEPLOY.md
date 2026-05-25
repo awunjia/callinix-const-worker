@@ -23,15 +23,23 @@ Then reconnect the project or trigger a new deploy.
 
 ---
 
-## Build settings (Cloudflare Pages / Workers build)
+## Build settings (Cloudflare Workers — Git deploy)
+
+Your deploy command must **install dependencies and build** before Wrangler uploads assets.
 
 | Setting | Value |
 |--------|--------|
-| Framework preset | None |
-| Build command | `npm ci && npm run build` |
-| Build output directory | `dist` |
+| **Deploy command** | `npm ci && npx wrangler deploy` |
 | Root directory | `/` |
 | Node version | `20` |
+
+Do **not** use `npx wrangler deploy` alone — `dist/` will not exist and you will get:
+
+`Could not detect a directory containing static files`
+
+`wrangler.toml` includes `[build] command = "npm run build"`, so `wrangler deploy` runs Vite after `npm ci`.
+
+Alternative deploy command: `npm run cf:deploy`
 
 ---
 

@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy",
+    "cf:deploy": "npm ci && npm run deploy",
     "deploy:pages": "npm run build && wrangler pages deploy dist --project-name=callinix-const"
   },
   "dependencies": {
