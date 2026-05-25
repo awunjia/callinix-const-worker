@@ -17,5 +17,7 @@ html_handling = "auto-trailing-slash"
 APP_ORIGIN = "https://app.callinix.com"
 TESTER_IPS = ""
 
-# Set secret in dashboard or: npx wrangler secret put PREVIEW_SECRET
-# Testers visit: https://callinix.com/?preview=YOUR_SECRET
+# Set secrets in dashboard or: npx wrangler secret put PREVIEW_SECRET
+# Testers visit: https://dashboard.callinix.com/?preview=YOUR_SECRET
+#
+# PROXY_HEADER_SECRET — same value used in Redirect Rule on app.callinix.com (see DEPLOY.md)

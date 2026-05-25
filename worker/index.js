@@ -47,10 +47,16 @@ function proxyToApp(request, env) {
   incoming.protocol = origin.protocol
   incoming.port = origin.port
 
+  const headers = new Headers(request.headers)
+  // Lets Cloudflare Redirect Rules skip app → dashboard for worker origin fetches
+  if (env.PROXY_HEADER_SECRET) {
+    headers.set('X-Callinx-Proxy', env.PROXY_HEADER_SECRET)
+  }
+
   return fetch(
     new Request(incoming.toString(), {
       method: request.method,
-      headers: request.headers,
+      headers,
       body: request.body,
       redirect: 'manual',
     }),

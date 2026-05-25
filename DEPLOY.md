@@ -157,6 +157,61 @@ To exit preview mode: delete cookie `callinix_tester` in devtools, or use a priv
 
 ---
 
+### Redirect `app.callinix.com` → `dashboard` (browsers only)
+
+Use this when the real app lives on **`app.callinix.com`** and `APP_ORIGIN` is `https://app.callinix.com`.  
+Browsers that open `app` directly go to `dashboard`; the gateway worker can still fetch `app` using a secret header.
+
+#### A. Create a bypass secret on the worker
+
+1. **Workers & Pages** → **callinix-const-worker** → **Settings** → **Variables and Secrets**
+2. **Add** → **Secret** → name: `PROXY_HEADER_SECRET`
+3. Value: long random string (e.g. `openssl rand -hex 24`) — **copy it** for step B
+4. **Save** and redeploy the worker if prompted
+
+#### B. Create the Redirect Rule (zone `callinix.com`)
+
+1. Open [Cloudflare dashboard](https://dash.cloudflare.com) → select zone **`callinix.com`** (not the worker)
+2. Left menu → **Rules** → **Redirect Rules**
+3. **Create rule**
+4. **Rule name:** `app to dashboard (except worker proxy)`
+5. **When incoming requests match…** → **Custom filter expression** → **Edit expression**, paste (replace `YOUR_PROXY_SECRET` with the value from step A):
+
+```
+(http.host eq "app.callinix.com" and not http.request.headers["x-callinx-proxy"][0] eq "YOUR_PROXY_SECRET")
+```
+
+6. **Then…** → **URL redirect** → **Dynamic**
+7. **Expression** (preserve path + query):
+
+```
+concat("https://dashboard.callinix.com", http.request.uri.path)
+```
+
+8. **Status code:** `302` (temporary) or `301` (permanent)
+9. **Preserve query string:** **On**
+10. **Deploy** / **Save**
+
+#### C. Worker variables (recap)
+
+| Name | Value |
+|------|--------|
+| `APP_ORIGIN` | `https://app.callinix.com` |
+| `PREVIEW_SECRET` | (secret) |
+| `PROXY_HEADER_SECRET` | (same string as in the redirect rule expression) |
+
+#### D. Test
+
+| URL | Expected |
+|-----|----------|
+| Incognito `https://app.callinix.com` | Redirects to `https://dashboard.callinix.com` → under-construction |
+| Incognito `https://dashboard.callinix.com` | Under-construction |
+| `https://dashboard.callinix.com/?preview=SECRET` | Real app (via proxy to `app`, with bypass header) |
+
+If preview shows the landing page after the redirect rule, the header secret in the rule and `PROXY_HEADER_SECRET` do not match, or the worker was not redeployed.
+
+---
+
 ### Optional — IP allowlist (no URL secret)
 
 Set `TESTER_IPS` to your office/VPN egress IPs. Those IPs skip the landing page without visiting the preview link.
